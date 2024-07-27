@@ -209,6 +209,27 @@ async def process_text_message(message, cleaned_text):
 #         return content[len("assistant"):]
 #     return content
 
+# async def generate_response_with_text(message_text):
+#     data = {
+#         "model": model,
+#         "messages": message_text,
+#         "stream": False,
+#         "temperature": TEMPERATURE,
+#         "top_p": TOP_P,
+#         "max_tokens": MAX_TOKEN,
+#     }
+#     try:
+#         response = None
+#         async with httpx.AsyncClient() as client:
+#             resp = await client.post(url, json=data, headers=headers, timeout=None)
+#             response_json = resp.json()
+#             response = response_json['choices'][0]['message']['content']
+#         return response
+#         # processed_response = preprocess_message(response)
+#         # return processed_response
+#     except httpx.RequestError as exc:
+#         return f"An error occurred while requesting {exc.request.url!r}."
+
 async def generate_response_with_text(message_text):
     data = {
         "model": model,
@@ -219,7 +240,7 @@ async def generate_response_with_text(message_text):
         "max_tokens": MAX_TOKEN,
     }
     try:
-        response = None
+        response_json = None
         async with httpx.AsyncClient() as client:
             resp = await client.post(url, json=data, headers=headers, timeout=None)
             response_json = resp.json()
@@ -229,6 +250,18 @@ async def generate_response_with_text(message_text):
         # return processed_response
     except httpx.RequestError as exc:
         return f"An error occurred while requesting {exc.request.url!r}."
+    except KeyError as e:
+        # Handle the KeyError and return an error message
+        error_message = f"Error: KeyError - {e}. Response JSON: {response_json}"
+        return error_message
+    except IndexError as e:
+        # Handle the IndexError if 'choices' list is empty
+        error_message = f"Error: IndexError - {e}. Response JSON: {response_json}"
+        return error_message
+    except Exception as e:
+        # Handle any other exceptions
+        error_message = f"Error: Exception - {e}. Response JSON: {response_json}"
+        return error_message
 
 
 async def generate_response_with_image_and_text(image_data, text, mime_type):
