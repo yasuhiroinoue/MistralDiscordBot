@@ -1,0 +1,10 @@
+
+aiohttp
+discord.py
+python-dotenv
+Pillow
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+vertex-ai
+httpx
