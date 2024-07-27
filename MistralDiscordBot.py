@@ -19,9 +19,9 @@ load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 GCP_REGION = os.getenv("GCP_REGION")
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
-TEMPERATURE = 0.5
-TOP_P = 0.95
-MAX_TOKEN = 2048
+TEMPERATURE = os.getenv("TEMPERATURE")
+TOP_P = os.getenv("TOP_P")
+MAX_TOKEN = os.getenv("MAX_TOKEN")
 vertexai.init(project=GCP_PROJECT_ID, location=GCP_REGION, )
 
 # Obtaining and Updating Google Cloud Credentials
@@ -214,6 +214,9 @@ async def generate_response_with_text(message_text):
         "model": model,
         "messages": message_text,
         "stream": False,
+        "temperature": TEMPERATURE,
+        "top_p": TOP_P,
+        "max_tokens": MAX_TOKEN,
     }
     try:
         response = None
